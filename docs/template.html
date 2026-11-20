@@ -90,8 +90,7 @@ function render(){
   const no=vs.filter(x=>x.verdict=="NO-GO").length, fx=vs.filter(x=>x.verdict=="GO WITH FIXES").length, go=vs.filter(x=>x.verdict=="GO").length;
   const b=document.getElementById("banner");
   b.className="banner "+(no?"no":"go");
-  b.textContent = no ? `Not ready: ${no} of ${vs.length} units are NO-GO, with ${f.length} problems for 5 teams to fix.` :
-    `Ready: all ${vs.length} units are GO, and no problems were found.`;
+  b.textContent = `Ready: all ${vs.length} units are GO, and no problems were found.`;
   if(no){const teams=new Set(f.map(x=>x.owner)).size; b.textContent=`Not ready: ${no} of ${vs.length} units are NO-GO (${fx} GO WITH FIXES, ${go} GO), with ${f.length} findings from 25 planted problems for ${teams} teams to fix.`;}
   document.getElementById("units").innerHTML = vs.map(u=>`<button class="unit${sel==u.unit_code?" sel":""}" onclick="pick('${u.unit_code}')"><div class="h">${esc(u.hospital)}</div><div class="n">${esc(u.unit_name)}</div><div class="v ${u.verdict.replace(/ /g,"-")}">${u.verdict}</div><div class="h">${u.blocking} blocking, ${u.warnings} warning${u.warnings==1?"":"s"}</div></button>`).join("");
   const det=document.getElementById("unitDetail");
