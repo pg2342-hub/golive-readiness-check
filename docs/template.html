@@ -69,6 +69,12 @@ a{color:var(--ink)}
 <p class="muted">Each of the 25 planted problems was run on its own and all together. A false positive is a problem the tool reports that was not planted.</p>
 <details><summary>The 25 planted problems</summary><ol id="issues"></ol></details>
 
+<h2>Run it yourself</h2>
+<p>Python 3.9 or later, standard library only. From the repo folder:</p>
+<pre style="background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:12px;overflow-x:auto;font-size:13px">python3 -m readiness.report sample_data/first_pull
+python3 -m readiness.report sample_data/after_fixes
+python3 -m eval.run_eval
+python3 -m unittest</pre>
 <h2>What it checks</h2>
 <div class="wrap"><table id="checks"><thead><tr><th>Check</th><th>Severity</th><th>Team that fixes it</th></tr></thead><tbody></tbody></table></div>
 
@@ -86,7 +92,7 @@ function render(){
   b.className="banner "+(no?"no":"go");
   b.textContent = no ? `Not ready: ${no} of ${vs.length} units are NO-GO, with ${f.length} problems for 5 teams to fix.` :
     `Ready: all ${vs.length} units are GO, and no problems were found.`;
-  if(no){const teams=new Set(f.map(x=>x.owner)).size; b.textContent=`Not ready: ${no} of ${vs.length} units are NO-GO (${fx} GO WITH FIXES, ${go} GO), with ${f.length} problems for ${teams} teams to fix.`;}
+  if(no){const teams=new Set(f.map(x=>x.owner)).size; b.textContent=`Not ready: ${no} of ${vs.length} units are NO-GO (${fx} GO WITH FIXES, ${go} GO), with ${f.length} findings from 25 planted problems for ${teams} teams to fix.`;}
   document.getElementById("units").innerHTML = vs.map(u=>`<button class="unit${sel==u.unit_code?" sel":""}" onclick="pick('${u.unit_code}')"><div class="h">${esc(u.hospital)}</div><div class="n">${esc(u.unit_name)}</div><div class="v ${u.verdict.replace(/ /g,"-")}">${u.verdict}</div><div class="h">${u.blocking} blocking, ${u.warnings} warning${u.warnings==1?"":"s"}</div></button>`).join("");
   const det=document.getElementById("unitDetail");
   if(sel){const items=f.filter(x=>x.unit==sel); det.innerHTML=`<h3>${esc(sel)}: ${items.length? items.length+" problems":"no problems"}</h3>`+(items.length?`<div class="wrap"><table><tr><th>Severity</th><th>Problem</th><th>Team</th></tr>${items.map(x=>`<tr><td class="sev ${x.severity}">${x.severity}</td><td>${esc(x.message)}</td><td>${esc(x.owner)}</td></tr>`).join("")}</table></div>`:"");} else det.innerHTML="";
