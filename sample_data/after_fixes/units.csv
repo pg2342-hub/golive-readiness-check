@@ -1,0 +1,9 @@
+unit_code,hospital,unit_name,ehr_unit,beds
+MC-4W,Main Campus,4 West Med-Surg,MC 4W MEDSURG,32
+MC-5E,Main Campus,5 East Cardiac Stepdown,MC 5E CARD SD,24
+MC-MICU,Main Campus,Medical ICU,MC MICU,20
+MC-ED,Main Campus,Emergency Department,MC EMERG,40
+MC-LD,Main Campus,Labor and Delivery,MC L&D,16
+RV-3N,Riverside,3 North Med-Surg,RV 3N MEDSURG,28
+RV-ICU,Riverside,ICU,RV ICU,12
+RV-ED,Riverside,Emergency Department,RV EMERG,22

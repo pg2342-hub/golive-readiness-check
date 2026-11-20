@@ -1,0 +1,129 @@
+employee_id,last_name,job_code,home_unit,fte,status,union,hire_date
+E1001,Staff1001,RNTRV,MC-4W,0.6,Active,Nurses Union (sample),2017-07-01
+E1002,Staff1002,RN1,MC-4W,0.9,Active,Nurses Union (sample),2016-09-01
+E1003,Staff1003,RN1,MC-4W,0.9,Active,Nurses Union (sample),2020-10-01
+E1004,Staff1004,RN1,MC-4W,0.9,Active,Nurses Union (sample),2023-04-01
+E1005,Staff1005,RN1,MC-4W,0.9,Active,Nurses Union (sample),2016-07-01
+E1006,Staff1006,RN2,MC-4W,1.0,Active,Nurses Union (sample),2016-04-01
+E1007,Staff1007,RN2,MC-4W,0.9,Active,Nurses Union (sample),2023-07-01
+E1008,Staff1008,RN2,MC-4W,0.9,Active,Nurses Union (sample),2024-02-01
+E1009,Staff1009,RN2,MC-4W,0.9,Active,Nurses Union (sample),2025-11-01
+E1010,Staff1010,CHG,MC-4W,0.9,Active,,2024-10-01
+E1011,Staff1011,CHG,MC-4W,1.0,Active,Nurses Union (sample),2015-04-01
+E1012,Staff1012,CNA,MC-4W,0.9,Active,Service Workers Union (sample),2023-03-01
+E1013,Staff1013,CNA,MC-4W,0.6,Active,Service Workers Union (sample),2021-03-01
+E1014,Staff1014,CNA,MC-4W,0.9,Active,Service Workers Union (sample),2024-05-01
+E1015,Staff1015,HUC,MC-4W,0.9,Active,,2016-10-01
+E1016,Staff1016,NM,MC-4W,0.9,Active,,2020-02-01
+E1017,Staff1017,RN1,MC-5E,0.9,Active,Nurses Union (sample),2024-01-01
+E1018,Staff1018,RN1,MC-5E,0.9,Active,Nurses Union (sample),2022-11-01
+E1019,Staff1019,RN1,MC-5E,1.0,Active,Nurses Union (sample),2020-08-01
+E1020,Staff1020,RN1,MC-5E,1.0,Active,Nurses Union (sample),2020-05-01
+E1021,Staff1021,RN1,MC-5E,0.9,Active,Nurses Union (sample),2017-12-01
+E1022,Staff1022,RN2,MC-5E,0.9,Active,Nurses Union (sample),2016-10-01
+E1023,Staff1023,RN2,MC-5E,0.6,Active,Nurses Union (sample),2023-08-01
+E1024,Staff1024,RN2,MC-5E,0.6,Active,Nurses Union (sample),2022-05-01
+E1025,Staff1025,RN2,MC-5E,0.9,Active,Nurses Union (sample),2016-09-01
+E1026,Staff1026,CHG,MC-5E,1.0,Active,Nurses Union (sample),2017-06-01
+E1027,Staff1027,CHG,MC-5E,0.9,Active,Nurses Union (sample),2022-07-01
+E1028,Staff1028,CNA,MC-5E,0.9,Active,Service Workers Union (sample),2025-02-01
+E1029,Staff1029,CNA,MC-5E,0.6,Active,Service Workers Union (sample),2020-12-01
+E1030,Staff1030,CNA,MC-5E,0.6,Active,Service Workers Union (sample),2024-08-01
+E1031,Staff1031,HUC,MC-5E,1.0,Active,Service Workers Union (sample),2016-02-01
+E1032,Staff1032,NM,MC-5E,0.6,Active,,2022-12-01
+E1033,Staff1033,RNCC,MC-MICU,0.9,Active,Nurses Union (sample),2015-12-01
+E1034,Staff1034,RNCC,MC-MICU,0.6,Active,Nurses Union (sample),2025-10-01
+E1035,Staff1035,RNCC,MC-MICU,1.0,Active,Nurses Union (sample),2019-12-01
+E1036,Staff1036,RNCC,MC-MICU,1.0,Active,Nurses Union (sample),2025-06-01
+E1037,Staff1037,RNCC,MC-MICU,0.9,Active,Nurses Union (sample),2022-06-01
+E1038,Staff1038,RNCC,MC-MICU,0.9,Active,Nurses Union (sample),2024-02-01
+E1039,Staff1039,RNCC,MC-MICU,1.0,Active,Nurses Union (sample),2015-04-01
+E1040,Staff1040,RNCC,MC-MICU,0.6,Active,Nurses Union (sample),2017-12-01
+E1041,Staff1041,CHG,MC-MICU,0.9,Active,Nurses Union (sample),2021-07-01
+E1042,Staff1042,CHG,MC-MICU,1.0,Active,Nurses Union (sample),2016-03-01
+E1043,Staff1043,CNA,MC-MICU,1.0,Active,Service Workers Union (sample),2021-09-01
+E1044,Staff1044,CNA,MC-MICU,0.6,Active,Service Workers Union (sample),2017-07-01
+E1045,Staff1045,CNA,MC-MICU,0.6,Active,Service Workers Union (sample),2021-06-01
+E1046,Staff1046,HUC,MC-MICU,1.0,Active,Service Workers Union (sample),2018-03-01
+E1047,Staff1047,NM,MC-MICU,0.9,Active,,2017-03-01
+E1048,Staff1048,RN1,MC-ED,0.9,Terminated,Nurses Union (sample),2025-04-01
+E1049,Staff1049,RN1,MC-ED,0.9,Active,Nurses Union (sample),2022-10-01
+E1050,Staff1050,RN1,MC-ED,0.9,Active,Nurses Union (sample),2019-05-01
+E1051,Staff1051,RN1,MC-ED,0.9,Active,Nurses Union (sample),2017-07-01
+E1052,Staff1052,RN1,MC-ED,0.6,Active,Nurses Union (sample),2024-10-01
+E1053,Staff1053,RN2,MC-ED,0.6,Active,Nurses Union (sample),2017-12-01
+E1054,Staff1054,RN2,MC-ED,0.9,Active,Nurses Union (sample),2022-11-01
+E1055,Staff1055,RN2,MC-ED,1.0,Active,Nurses Union (sample),2021-07-01
+E1056,Staff1056,RN2,MC-ED,1.0,Active,Nurses Union (sample),2016-08-01
+E1057,Staff1057,CHG,MC-ED,1.0,Active,Nurses Union (sample),2015-04-01
+E1058,Staff1058,CHG,MC-ED,0.9,Active,Nurses Union (sample),2018-08-01
+E1059,Staff1059,CNA,MC-ED,0.9,Terminated,Service Workers Union (sample),2016-06-01
+E1060,Staff1060,CNA,MC-ED,0.9,Active,Service Workers Union (sample),2016-01-01
+E1061,Staff1061,CNA,MC-ED,0.9,Active,Service Workers Union (sample),2023-02-01
+E1062,Staff1062,HUC,MC-ED,0.6,Active,Service Workers Union (sample),2024-01-01
+E1063,Staff1063,NM,MC-ED,0.9,Active,,2018-10-01
+E1064,Staff1064,RN1,MC-LD,1.0,Active,Nurses Union (sample),2017-11-01
+E1065,Staff1065,RN1,MC-LD,0.6,Active,Nurses Union (sample),2020-10-01
+E1066,Staff1066,RN1,MC-LD,0.6,Active,Nurses Union (sample),2022-02-01
+E1067,Staff1067,RN1,MC-LD,0.9,Active,Nurses Union (sample),2022-08-01
+E1068,Staff1068,RN1,MC-LD,1.0,Active,Nurses Union (sample),2022-05-01
+E1069,Staff1069,RN2,MC-LD,0.9,Active,,2017-02-01
+E1070,Staff1070,RN2,MC-LD,0.6,Active,Nurses Union (sample),2019-08-01
+E1071,Staff1071,RN2,MC-LD,0.9,Active,Nurses Union (sample),2023-01-01
+E1072,Staff1072,RN2,MC-LD,0.9,Active,Nurses Union (sample),2023-06-01
+E1073,Staff1073,CHG,MC-LD,0.9,Active,Nurses Union (sample),2023-01-01
+E1074,Staff1074,CHG,MC-LD,0.6,Active,Nurses Union (sample),2025-02-01
+E1075,Staff1075,CNA,MC-LD,0.6,Active,Service Workers Union (sample),2023-06-01
+E1076,Staff1076,CNA,MC-LD,0.9,Active,Service Workers Union (sample),2020-04-01
+E1077,Staff1077,CNA,MC-LD,0.6,Active,Service Workers Union (sample),2025-04-01
+E1078,Staff1078,HUC,MC-LD,0.9,Active,Service Workers Union (sample),2018-07-01
+E1079,Staff1079,NM,LD-OLD,0.9,Active,,2018-09-01
+E1080,Staff1080,RN1,RV-3N,1.0,Active,Nurses Union (sample),2020-12-01
+E1081,Staff1081,RN1,RV-3N,0.9,Active,Nurses Union (sample),2015-05-01
+E1082,Staff1082,RN1,RV-3N,1.0,Active,Nurses Union (sample),2019-04-01
+E1083,Staff1083,RN1,RV-3N,0.6,Active,Nurses Union (sample),2022-12-01
+E1084,Staff1084,RN1,RV-3N,0.6,Active,Nurses Union (sample),2020-02-01
+E1085,Staff1085,RN2,RV-3N,0.9,Active,Nurses Union (sample),2016-04-01
+E1086,Staff1086,RN2,RV-3N,1.0,Active,Nurses Union (sample),2018-06-01
+E1087,Staff1087,RN2,RV-3N,0.9,Active,Nurses Union (sample),2022-10-01
+E1088,Staff1088,RN2,RV-3N,0.9,Active,Nurses Union (sample),2022-11-01
+E1089,Staff1089,CHG,RV-3N,0.6,Active,Nurses Union (sample),2025-02-01
+E1090,Staff1090,CHG,RV-3N,0.9,Active,Nurses Union (sample),2021-12-01
+E1091,Staff1091,CNA,RV-3N,0.9,Active,Service Workers Union (sample),2022-03-01
+E1092,Staff1092,CNA,RV-3N,1.0,Active,Service Workers Union (sample),2025-06-01
+E1093,Staff1093,CNA,RV-3N,0.9,Active,Service Workers Union (sample),2021-08-01
+E1094,Staff1094,HUC,RV-3N,1.0,Active,Service Workers Union (sample),2016-12-01
+E1095,Staff1095,NM,RV-3N,0.9,Active,,2017-03-01
+E1096,Staff1096,RNCC,RV-ICU,0.9,Active,Nurses Union (sample),2017-10-01
+E1097,Staff1097,RNCC,RV-ICU,1.0,Active,Nurses Union (sample),2025-03-01
+E1098,Staff1098,RNCC,RV-ICU,1.0,Active,Nurses Union (sample),2025-06-01
+E1099,Staff1099,RNCC,RV-ICU,0.9,Active,Nurses Union (sample),2023-09-01
+E1100,Staff1100,RNCC,RV-ICU,0.9,Active,Nurses Union (sample),2015-01-01
+E1101,Staff1101,RNCC,RV-ICU,0.9,Active,Nurses Union (sample),2023-12-01
+E1102,Staff1102,RNCC,RV-ICU,0.9,Active,Nurses Union (sample),2021-04-01
+E1103,Staff1103,RNCC,RV-ICU,0.9,Active,Nurses Union (sample),2015-05-01
+E1104,Staff1104,CHG,RV-ICU,0.9,Active,Nurses Union (sample),2019-09-01
+E1105,Staff1105,CHG,RV-ICU,0.9,Active,Nurses Union (sample),2024-06-01
+E1106,Staff1106,CNA,RV-ICU,0.6,Active,Service Workers Union (sample),2023-07-01
+E1107,Staff1107,CNA,RV-ICU,0.9,Active,Service Workers Union (sample),2015-12-01
+E1108,Staff1108,CNA,RV-ICU,0.6,Active,Service Workers Union (sample),2022-11-01
+E1109,Staff1109,HUC,RV-ICU,1.0,Active,Service Workers Union (sample),2023-03-01
+E1110,Staff1110,NM,RV-ICU,0.9,Active,,2023-09-01
+E1111,Staff1111,RN1,RV-ED,0.9,Active,Nurses Union (sample),2022-03-01
+E1112,Staff1112,RN1,RV-ED,0.9,Active,Nurses Union (sample),2017-03-01
+E1113,Staff1113,RN1,RV-ED,0.9,Active,Nurses Union (sample),2022-10-01
+E1114,Staff1114,RN1,RV-ED,0.9,Active,Nurses Union (sample),2023-01-01
+E1115,Staff1115,RN1,RV-ED,0.6,Active,Nurses Union (sample),2025-09-01
+E1116,Staff1116,RN2,RV-ED,1.0,Active,Nurses Union (sample),2016-09-01
+E1117,Staff1117,RN2,RV-ED,0.9,Active,Nurses Union (sample),2018-04-01
+E1118,Staff1118,RN2,RV-ED,0.6,Active,Nurses Union (sample),2015-02-01
+E1119,Staff1119,RN2,RV-ED,1.0,Active,Nurses Union (sample),2023-01-01
+E1120,Staff1120,CHG,RV-ED,0.9,Active,Nurses Union (sample),2022-06-01
+E1121,Staff1121,CHG,RV-ED,0.9,Active,Nurses Union (sample),2019-08-01
+E1122,Staff1122,CNA2,RV-ED,1.0,Active,Service Workers Union (sample),2023-04-01
+E1123,Staff1123,CNA,RV-ED,0.6,Active,Service Workers Union (sample),2023-04-01
+E1124,Staff1124,CNA,RV-ED,1.0,Active,Service Workers Union (sample),2017-07-01
+E1125,Staff1125,HUC,RV-ED,0.9,Active,Service Workers Union (sample),2021-08-01
+E1126,Staff1126,NM,RV-ED,0.6,Active,,2016-11-01
+E1022,Duplicate,RN2,MC-5E,0.9,Active,Nurses Union (sample),2016-10-01
+E1104,Staff1104,CHG,RV-ICU,0.6,Active,Nurses Union (sample),2019-09-01

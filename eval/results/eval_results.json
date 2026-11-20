@@ -1,0 +1,138 @@
+{
+  "clean_findings": 0,
+  "alone_caught": 25,
+  "alone_with_extra": [],
+  "together_caught": 25,
+  "together_false_positives": [],
+  "total_issues": 25,
+  "findings_together": 26,
+  "no_go_units": 6,
+  "units": 8,
+  "detail": [
+    {
+      "issue": "i01",
+      "label": "Agency nurse set up in timekeeping but never added to the HR roster (4 West)",
+      "caught": true
+    },
+    {
+      "issue": "i02",
+      "label": "Traveler scheduled on the Riverside ICU with no HR record",
+      "caught": true
+    },
+    {
+      "issue": "i03",
+      "label": "New hire scheduled on Labor and Delivery before HR onboarding finished",
+      "caught": true
+    },
+    {
+      "issue": "i04",
+      "label": "ED nurse terminated in HR but still on next week's schedule",
+      "caught": true
+    },
+    {
+      "issue": "i05",
+      "label": "ED nursing assistant terminated in HR but still scheduled",
+      "caught": true
+    },
+    {
+      "issue": "i06",
+      "label": "Stepdown nurse loaded twice in the HR roster after a job change",
+      "caught": true
+    },
+    {
+      "issue": "i07",
+      "label": "Riverside ICU charge nurse duplicated with a different FTE",
+      "caught": true
+    },
+    {
+      "issue": "i08",
+      "label": "L&D manager's home unit still uses a retired unit code",
+      "caught": true
+    },
+    {
+      "issue": "i09",
+      "label": "Travel-nurse job code with no staffing role (4 West)",
+      "caught": true
+    },
+    {
+      "issue": "i10",
+      "label": "New nursing assistant job code not mapped to a role (Riverside ED)",
+      "caught": true
+    },
+    {
+      "issue": "i11",
+      "label": "4 West charge nurse with no union on file",
+      "caught": true
+    },
+    {
+      "issue": "i12",
+      "label": "L&D nurse with no union on file",
+      "caught": true
+    },
+    {
+      "issue": "i13",
+      "label": "4 West unit coordinator with no union on file",
+      "caught": true
+    },
+    {
+      "issue": "i14",
+      "label": "Double-time pay code used in the ED but missing from the pay code table",
+      "caught": true
+    },
+    {
+      "issue": "i15",
+      "label": "Call-back pay code points to a contract rule that does not exist (Riverside ICU)",
+      "caught": true
+    },
+    {
+      "issue": "i16",
+      "label": "Incentive-shift pay code has no contract rule (Stepdown)",
+      "caught": true
+    },
+    {
+      "issue": "i17",
+      "label": "EHR interface renamed the Riverside ED census unit, breaking the mapping",
+      "caught": true
+    },
+    {
+      "issue": "i18",
+      "label": "New observation unit in the EHR census with no staffing unit",
+      "caught": true
+    },
+    {
+      "issue": "i19",
+      "label": "Census feed never turned on for Labor and Delivery",
+      "caught": true
+    },
+    {
+      "issue": "i20",
+      "label": "Stepdown census feed dropped 10 hours",
+      "caught": true
+    },
+    {
+      "issue": "i21",
+      "label": "Riverside med-surg census feed dropped 5 hours",
+      "caught": true
+    },
+    {
+      "issue": "i22",
+      "label": "ED has unit coordinator shifts but no staffing grid for them",
+      "caught": true
+    },
+    {
+      "issue": "i23",
+      "label": "Riverside ICU has nursing assistant shifts but no grid for them",
+      "caught": true
+    },
+    {
+      "issue": "i24",
+      "label": "4 West nurse floated to Stepdown on an overlapping shift",
+      "caught": true
+    },
+    {
+      "issue": "i25",
+      "label": "Riverside ED nurse double-booked on the same shift",
+      "caught": true
+    }
+  ]
+}

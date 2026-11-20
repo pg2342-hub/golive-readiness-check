@@ -1,0 +1,8 @@
+job_code,title,role,union_covered
+RN1,Staff Nurse I,RN,Y
+RN2,Staff Nurse II,RN,Y
+RNCC,Critical Care Nurse,RN,Y
+CNA,Nursing Assistant,CNA,Y
+HUC,Health Unit Coordinator,Clerk,Y
+CHG,Charge Nurse,RN,Y
+NM,Nurse Manager,Manager,N

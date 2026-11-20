@@ -1,0 +1,8 @@
+pay_code,description,contract_rule
+REG,Regular,ALL-REG
+OT15,Overtime 1.5x,NU-OT-1
+SWOT,Service overtime 1.5x,SW-OT-1
+CALLB,Call-back,NU-CALL-1
+INCSH,Incentive extra shift,NU-INC-1
+FLOAT,Floated to another unit,NU-FLT-1
+PTO,Paid time off,ALL-PTO

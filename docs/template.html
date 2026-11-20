@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Go-Live Readiness Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#111;--muted:#555;--line:#d6d6d6;--bg:#fff;--soft:#f5f5f5;--no:#b42318;--fix:#a15c00;--go:#1a7f37}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif}
+main{max-width:980px;margin:0 auto;padding:28px 16px 60px}
+h1{font-size:26px;margin:0 0 4px}h2{font-size:18px;margin:32px 0 8px}h3{font-size:15px;margin:18px 0 6px}
+.sub{color:var(--muted);margin:0 0 18px}
+.box{border:1px solid var(--line);border-radius:8px;padding:14px 16px;background:var(--soft)}
+ol.how{margin:6px 0 0;padding-left:20px}ol.how li{margin:3px 0}
+.toggle{display:flex;gap:8px;margin:18px 0 10px;flex-wrap:wrap}
+.toggle button{font:inherit;border:1px solid var(--ink);background:#fff;padding:7px 14px;border-radius:6px;cursor:pointer}
+.toggle button.on{background:var(--ink);color:#fff}
+.banner{font-size:17px;font-weight:600;padding:12px 16px;border-radius:8px;border:2px solid}
+.banner.no{border-color:var(--no);color:var(--no)}.banner.go{border-color:var(--go);color:var(--go)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:12px}
+.unit{border:1px solid var(--line);border-radius:8px;padding:10px 12px;cursor:pointer;background:#fff;text-align:left;font:inherit}
+.unit:hover,.unit.sel{border-color:var(--ink)}
+.unit .h{font-size:12px;color:var(--muted)}.unit .n{font-weight:600}
+.v{font-weight:700;font-size:13px}.v.NO-GO{color:var(--no)}.v.GO{color:var(--go)}.v.GO-WITH-FIXES{color:var(--fix)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+td,th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.sev{font-size:12px;font-weight:700;text-transform:uppercase}.sev.blocking{color:var(--no)}.sev.warning{color:var(--fix)}
+.team{margin-top:14px}.team h3 span{color:var(--muted);font-weight:400}
+.muted{color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.stat{border:1px solid var(--line);border-radius:8px;padding:10px 12px}.stat b{font-size:22px;display:block}
+.wrap{overflow-x:auto}
+footer{margin-top:40px;color:var(--muted);font-size:13px}
+a{color:var(--ink)}
+</style>
+</head>
+<body>
+<main>
+<h1>Go-live readiness check</h1>
+<p class="sub">Before a hospital unit goes live on a new staffing system, three feeds have to agree: the staff roster from HR, the schedule and pay codes from timekeeping, and the hourly patient census from the EHR. This tool reads all three and says, unit by unit, whether the unit is ready, and which team has to fix what.</p>
+
+<div class="box">
+<b>How to read this page</b>
+<ol class="how">
+<li>Pick <b>First data pull</b> to see a made-up two-hospital system with 25 typical data problems planted in it, or <b>After fixes</b> to see the same system once those problems are fixed.</li>
+<li>Each unit card shows its verdict. <b>NO-GO</b> means at least one blocking problem. <b>GO WITH FIXES</b> means only warnings. <b>GO</b> means nothing found.</li>
+<li>Click a unit to see its problems, or read the fix list below, which is grouped by the team that owns each fix.</li>
+</ol>
+</div>
+
+<div class="toggle" role="tablist">
+<button id="b-first" class="on" onclick="show('first')">First data pull</button>
+<button id="b-fixed" onclick="show('fixed')">After fixes</button>
+</div>
+<div id="banner" class="banner"></div>
+
+<h2>Units</h2>
+<div id="units" class="grid"></div>
+<div id="unitDetail"></div>
+
+<h2>Fix list by team</h2>
+<div id="fixes"></div>
+
+<h2>How well the checks catch problems</h2>
+<div class="stats" id="stats"></div>
+<p class="muted">Each of the 25 planted problems was run on its own and all together. A false positive is a problem the tool reports that was not planted.</p>
+<details><summary>The 25 planted problems</summary><ol id="issues"></ol></details>
+
+<h2>What it checks</h2>
+<div class="wrap"><table id="checks"><thead><tr><th>Check</th><th>Severity</th><th>Team that fixes it</th></tr></thead><tbody></tbody></table></div>
+
+<footer>All data on this page is made up. Unit names, unions, pay codes and contract rules are illustrative and do not describe any real hospital or contract. Code and sample data: <a href="https://github.com/pg2342-hub/golive-readiness-check">github.com/pg2342-hub/golive-readiness-check</a>.</footer>
+</main>
+<script>
+const D = /*DATA*/null;
+let view = "first", sel = null;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function show(v){view=v;sel=null;document.getElementById("b-first").className=v=="first"?"on":"";document.getElementById("b-fixed").className=v=="fixed"?"on":"";render();}
+function render(){
+  const V=D.views[view], vs=V.verdicts, f=V.findings;
+  const no=vs.filter(x=>x.verdict=="NO-GO").length, fx=vs.filter(x=>x.verdict=="GO WITH FIXES").length, go=vs.filter(x=>x.verdict=="GO").length;
+  const b=document.getElementById("banner");
+  b.className="banner "+(no?"no":"go");
+  b.textContent = no ? `Not ready: ${no} of ${vs.length} units are NO-GO, with ${f.length} problems for 5 teams to fix.` :
+    `Ready: all ${vs.length} units are GO, and no problems were found.`;
+  if(no){const teams=new Set(f.map(x=>x.owner)).size; b.textContent=`Not ready: ${no} of ${vs.length} units are NO-GO (${fx} GO WITH FIXES, ${go} GO), with ${f.length} problems for ${teams} teams to fix.`;}
+  document.getElementById("units").innerHTML = vs.map(u=>`<button class="unit${sel==u.unit_code?" sel":""}" onclick="pick('${u.unit_code}')"><div class="h">${esc(u.hospital)}</div><div class="n">${esc(u.unit_name)}</div><div class="v ${u.verdict.replace(/ /g,"-")}">${u.verdict}</div><div class="h">${u.blocking} blocking, ${u.warnings} warning${u.warnings==1?"":"s"}</div></button>`).join("");
+  const det=document.getElementById("unitDetail");
+  if(sel){const items=f.filter(x=>x.unit==sel); det.innerHTML=`<h3>${esc(sel)}: ${items.length? items.length+" problems":"no problems"}</h3>`+(items.length?`<div class="wrap"><table><tr><th>Severity</th><th>Problem</th><th>Team</th></tr>${items.map(x=>`<tr><td class="sev ${x.severity}">${x.severity}</td><td>${esc(x.message)}</td><td>${esc(x.owner)}</td></tr>`).join("")}</table></div>`:"");} else det.innerHTML="";
+  const known=new Set(vs.map(u=>u.unit_code)); const groups={};
+  f.forEach(x=>{(groups[x.owner]=groups[x.owner]||[]).push(x)});
+  const order=Object.keys(groups).sort((a,b)=>groups[b].filter(x=>x.severity=="blocking").length-groups[a].filter(x=>x.severity=="blocking").length||a.localeCompare(b));
+  document.getElementById("fixes").innerHTML = order.length? order.map(o=>`<div class="team"><h3>${esc(o)} <span>(${groups[o].length})</span></h3><div class="wrap"><table><tr><th>Severity</th><th>Unit</th><th>Problem</th></tr>${groups[o].sort((a,b)=>(a.severity!="blocking")-(b.severity!="blocking")||a.unit.localeCompare(b.unit)).map(x=>`<tr><td class="sev ${x.severity}">${x.severity}</td><td>${known.has(x.unit)?esc(x.unit):"Not tied to a live unit"}</td><td>${esc(x.message)}</td></tr>`).join("")}</table></div></div>`).join("") : "<p>Nothing to fix.</p>";
+}
+function pick(u){sel = sel==u?null:u; render();}
+const E=D.eval;
+document.getElementById("stats").innerHTML=[
+ [`${E.clean}`,"problems reported on the clean system"],
+ [`${E.alone} of ${E.total}`,"planted problems caught when run one at a time"],
+ [`${E.together} of ${E.total}`,"caught when all 25 are planted together"],
+ [`${E.fp}`,"false positives"]].map(s=>`<div class="stat"><b>${s[0]}</b>${s[1]}</div>`).join("");
+document.getElementById("issues").innerHTML=D.issues.map(i=>`<li>${esc(i)}</li>`).join("");
+document.querySelector("#checks tbody").innerHTML=D.checks.map(c=>`<tr><td>${esc(c.name)}</td><td class="sev ${c.severity}">${c.severity}</td><td>${esc(c.owner)}</td></tr>`).join("");
+render();
+</script>
+</body>
+</html>

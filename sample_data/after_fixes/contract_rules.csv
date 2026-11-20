@@ -1,0 +1,8 @@
+rule_id,union,rule
+NU-OT-1,Nurses Union (sample),Time and a half after 40 hours a week or 12 hours in a shift
+NU-CALL-1,Nurses Union (sample),"Call-back paid at time and a half, minimum 3 hours"
+NU-INC-1,Nurses Union (sample),Extra-shift incentive only for shifts posted as critical need
+NU-FLT-1,Nurses Union (sample),Float only to units on the nurse's competency list
+SW-OT-1,Service Workers Union (sample),Time and a half after 40 hours a week
+ALL-REG,All,Regular hours
+ALL-PTO,All,Paid time off from accrual
