@@ -1,43 +1,37 @@
 <!doctype html>
 <html lang="en">
 <head>
+<!-- demo-chrome --><meta name="theme-color" content="#f4f2ec"><link rel="icon" href="https://pranavgudise.dev/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="https://pranavgudise.dev/kit/demo.css"><!-- /demo-chrome -->
+
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Go-Live Readiness Check</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#111;--muted:#555;--line:#d6d6d6;--bg:#fff;--soft:#f5f5f5;--no:#b42318;--fix:#a15c00;--go:#1a7f37}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif}
-main{max-width:980px;margin:0 auto;padding:28px 16px 60px}
-h1{font-size:26px;margin:0 0 4px}h2{font-size:18px;margin:32px 0 8px}h3{font-size:15px;margin:18px 0 6px}
-.sub{color:var(--muted);margin:0 0 18px}
-.box{border:1px solid var(--line);border-radius:8px;padding:14px 16px;background:var(--soft)}
-ol.how{margin:6px 0 0;padding-left:20px}ol.how li{margin:3px 0}
-.toggle{display:flex;gap:8px;margin:18px 0 10px;flex-wrap:wrap}
-.toggle button{font:inherit;border:1px solid var(--ink);background:#fff;padding:7px 14px;border-radius:6px;cursor:pointer}
-.toggle button.on{background:var(--ink);color:#fff}
-.banner{font-size:17px;font-weight:600;padding:12px 16px;border-radius:8px;border:2px solid}
-.banner.no{border-color:var(--no);color:var(--no)}.banner.go{border-color:var(--go);color:var(--go)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:12px}
-.unit{border:1px solid var(--line);border-radius:8px;padding:10px 12px;cursor:pointer;background:#fff;text-align:left;font:inherit}
+.sub{color:var(--ink-2);font-size:18px;margin:0 0 24px;max-width:42em}
+.box{border:1px solid var(--rule);border-radius:16px;padding:18px 22px}
+ol.how{margin:8px 0 0;padding-left:20px}ol.how li{margin:4px 0}
+.toggle{display:flex;gap:8px;margin:24px 0 14px;flex-wrap:wrap}
+.toggle button.on{background:var(--green);border-color:var(--green);color:#fff}
+.banner{font:400 22px/1.3 var(--serif);padding:16px 20px;border-radius:16px;border:1px solid var(--ink)}
+.banner.no{background:var(--ink);color:var(--paper)}.banner.go{background:var(--green-wash);border-color:var(--green-wash);color:var(--green)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-top:16px}
+.unit{border:1px solid var(--rule);border-radius:14px;padding:12px 14px;cursor:pointer;background:transparent;text-align:left;
+font:inherit;display:block;min-height:0;font-weight:400}
 .unit:hover,.unit.sel{border-color:var(--ink)}
-.unit .h{font-size:12px;color:var(--muted)}.unit .n{font-weight:600}
-.v{font-weight:700;font-size:13px}.v.NO-GO{color:var(--no)}.v.GO{color:var(--go)}.v.GO-WITH-FIXES{color:var(--fix)}
-table{border-collapse:collapse;width:100%;font-size:14px}
-td,th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
-.sev{font-size:12px;font-weight:700;text-transform:uppercase}.sev.blocking{color:var(--no)}.sev.warning{color:var(--fix)}
-.team{margin-top:14px}.team h3 span{color:var(--muted);font-weight:400}
-.muted{color:var(--muted)}
-.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
-.stat{border:1px solid var(--line);border-radius:8px;padding:10px 12px}.stat b{font-size:22px;display:block}
+.unit .h{font:400 12px/1.4 var(--mono);color:var(--ink-2)}.unit .n{font-weight:500}
+.v{font:500 12.5px/1.4 var(--mono);letter-spacing:.03em}.v.NO-GO{color:var(--ink)}.v.GO{color:var(--green)}
+.v.GO-WITH-FIXES{color:var(--ink-2)}
+.sev{font:500 12px/1.4 var(--mono);letter-spacing:.03em}.sev.blocking{color:var(--ink)}.sev.warning{color:var(--ink-2)}
+.team{margin-top:18px}.team h3 span{color:var(--ink-2);font-weight:400}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.stat{border:1px solid var(--rule);border-radius:16px;padding:16px 18px}.stat b{font:400 32px/1.1 var(--serif);display:block}
 .wrap{overflow-x:auto}
-footer{margin-top:40px;color:var(--muted);font-size:13px}
-a{color:var(--ink)}
+main>footer{margin-top:48px;color:var(--ink-2);font-size:14px}
 </style>
 </head>
 <body>
+<!-- demo-chrome --><header class="demo-top"><a class="demo-brand" href="https://pranavgudise.dev/"><svg class="demo-mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.25"/><g class="n"><path class="f" d="M15.5 8.5 L 13.4 13.4 L 8.5 15.5 L 10.6 10.6 Z"/></g><circle class="p" cx="12" cy="12" r=".7"/></svg><span>Pranav Gudise</span></a><a class="pill" href="https://github.com/pg2342-hub/golive-readiness-check">Code on GitHub</a></header><!-- /demo-chrome -->
+
 <main>
 <h1>Go-live readiness check</h1>
 <p class="sub">Before a hospital unit goes live on a new staffing system, three feeds have to agree: the staff roster from HR, the schedule and pay codes from timekeeping, and the hourly patient census from the EHR. This tool reads all three and says, unit by unit, whether the unit is ready, and which team has to fix what.</p>
@@ -111,5 +105,6 @@ document.getElementById("issues").innerHTML=D.issues.map(i=>`<li>${esc(i)}</li>`
 document.querySelector("#checks tbody").innerHTML=D.checks.map(c=>`<tr><td>${esc(c.name)}</td><td class="sev ${c.severity}">${c.severity}</td><td>${esc(c.owner)}</td></tr>`).join("");
 render();
 </script>
+<!-- demo-chrome --><footer class="demo-foot"><span>A working build by <a href="https://pranavgudise.dev/">Pranav Gudise</a>. Synthetic or public data only.</span><a href="https://github.com/pg2342-hub/golive-readiness-check">github.com/pg2342-hub/golive-readiness-check</a></footer><!-- /demo-chrome -->
 </body>
 </html>
