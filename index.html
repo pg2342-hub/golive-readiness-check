@@ -6,103 +6,258 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Go-Live Readiness Check</title>
+<meta name="description" content="Unit by unit go-live readiness for a new hospital staffing system: HR roster, timekeeping schedule and EHR census checked against each other, with a fix list for each owning team.">
 <style>
-.sub{color:var(--ink-2);font-size:18px;margin:0 0 24px;max-width:42em}
-.box{border:1px solid var(--rule);border-radius:16px;padding:18px 22px}
-ol.how{margin:8px 0 0;padding-left:20px}ol.how li{margin:4px 0}
-.toggle{display:flex;gap:8px;margin:24px 0 14px;flex-wrap:wrap}
-.toggle button.on{background:var(--green);border-color:var(--green);color:#fff}
-.banner{font:400 22px/1.3 var(--serif);padding:16px 20px;border-radius:16px;border:1px solid var(--ink)}
-.banner.no{background:var(--ink);color:var(--paper)}.banner.go{background:var(--green-wash);border-color:var(--green-wash);color:var(--green)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-top:16px}
-.unit{border:1px solid var(--rule);border-radius:14px;padding:12px 14px;cursor:pointer;background:transparent;text-align:left;
-font:inherit;display:block;min-height:0;font-weight:400}
-.unit:hover,.unit.sel{border-color:var(--ink)}
-.unit .h{font:400 12px/1.4 var(--mono);color:var(--ink-2)}.unit .n{font-weight:500}
-.v{font:500 12.5px/1.4 var(--mono);letter-spacing:.03em}.v.NO-GO{color:var(--ink)}.v.GO{color:var(--green)}
-.v.GO-WITH-FIXES{color:var(--ink-2)}
-.sev{font:500 12px/1.4 var(--mono);letter-spacing:.03em}.sev.blocking{color:var(--ink)}.sev.warning{color:var(--ink-2)}
-.team{margin-top:18px}.team h3 span{color:var(--ink-2);font-weight:400}
-.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
-.stat{border:1px solid var(--rule);border-radius:16px;padding:16px 18px}.stat b{font:400 32px/1.1 var(--serif);display:block}
-.wrap{overflow-x:auto}
-main>footer{margin-top:48px;color:var(--ink-2);font-size:14px}
+.head h1{margin:40px 0 14px}
+.head .lead{max-width:40em}
+/* the readiness board: switch, verdict, counts, unit tiles, unit detail */
+.board{margin:32px 0 0;border:1px solid var(--rule);border-radius:16px;background:#fbfaf6;overflow:hidden;scroll-margin-top:24px}
+.bar-top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding:16px 24px;border-bottom:1px solid var(--rule)}
+.seg{display:flex;width:fit-content;max-width:100%;gap:2px;padding:3px;border:1px solid var(--rule);border-radius:999px;background:var(--paper)}
+.seg button{min-height:38px;padding:0 18px;border:0;border-radius:999px;background:transparent;color:var(--ink-2);font:500 15px/1 var(--sans);cursor:pointer;white-space:nowrap}
+.seg button:hover{color:var(--ink)}
+.seg button[aria-checked=true]{background:var(--ink);color:var(--paper)}
+.cap{margin:0;color:var(--ink-2);font-size:15px}
+.vline{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 24px;align-items:center;padding:22px 24px 6px}
+.vline h2{all:unset;display:block;font:400 34px/1.1 var(--serif)}
+.vline p{grid-column:1/-1;margin:0;font-size:17px;max-width:46em}
+.gate{justify-self:end;display:inline-flex;align-items:center;min-height:34px;padding:0 16px;border-radius:999px;font:500 13px/1 var(--mono);letter-spacing:.06em;white-space:nowrap}
+.gate.nogo{background:var(--ink);color:var(--paper)}
+.gate.go{background:var(--green-wash);color:var(--green)}
+.tally{padding:18px 24px 22px}
+.stack{display:flex;gap:4px;height:22px}
+.stack i{flex:1 1 0;border-radius:4px;transition:background-color .3s var(--ease)}
+.k-NO-GO{background:var(--ink)}
+.k-GO-WITH-FIXES{background:repeating-linear-gradient(135deg,var(--ink) 0 1.5px,transparent 1.5px 6px);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.k-GO{background:var(--green)}
+.counts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:14px}
+.counts div{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:10px;align-items:baseline}
+.counts b{grid-row:span 2;font:400 36px/1 var(--serif)}
+.counts .lab{display:flex;align-items:center;gap:8px;font:500 13px/1.3 var(--mono);letter-spacing:.04em}
+.counts .lab i{width:12px;height:12px;border-radius:3px;flex:none}
+.counts span:last-child{color:var(--ink-2);font-size:14px;line-height:1.35}
+.counts .zero b{color:var(--ink-2)}
+.campuses{border-top:1px solid var(--rule);padding:6px 24px 22px}
+.campus h3{display:flex;align-items:baseline;gap:10px;margin:18px 0 10px;font:400 20px/1.2 var(--serif)}
+.campus h3 span{font:400 13px/1 var(--mono);color:var(--ink-2)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(186px,1fr));gap:10px}
+button.tile{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:8px;min-height:0;padding:0 14px 12px;border:1px solid var(--rule);border-radius:12px;background:var(--paper);color:var(--ink);text-align:left;font:inherit;font-weight:400;overflow:hidden;cursor:pointer;transition:border-color .2s,box-shadow .2s,transform .2s var(--ease)}
+button.tile::before{content:"";display:block;height:5px;margin:0 -14px 4px}
+button.tile.t-NO-GO::before{background:var(--ink)}
+button.tile.t-GO-WITH-FIXES::before{background:repeating-linear-gradient(90deg,var(--ink) 0 8px,transparent 8px 12px)}
+button.tile.t-GO::before{background:var(--green)}
+button.tile:hover{border-color:var(--ink);transform:translateY(-2px)}
+button.tile[aria-expanded=true]{border-color:var(--ink);box-shadow:0 0 0 1.5px var(--ink)}
+.tile .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tile .code{font:400 12.5px/1 var(--mono);color:var(--ink-2)}
+.tile .name{font:400 18px/1.2 var(--serif);min-height:2.4em}
+.tile .nums{margin-top:auto;display:flex;gap:16px;font-size:13px;color:var(--ink-2)}
+.tile .nums b{font:400 22px/1 var(--serif);color:var(--ink);margin-right:5px}
+.tile .nums .z b{color:var(--ink-2)}
+.badge.fixes{border-style:dashed}
+.badge{min-height:24px;padding:0 10px;font-size:11.5px}
+.detail{border-top:1px solid var(--rule);padding:18px 24px 20px;background:var(--paper)}
+.detail h3{margin:0 0 4px;font:400 22px/1.2 var(--serif)}
+.detail .hint{margin:0;color:var(--ink-2);font-size:15px}
+.probs{list-style:none;margin:10px 0 0;padding:0}
+.probs li{display:grid;grid-template-columns:6.5em minmax(0,1fr) 11em;gap:6px 16px;align-items:baseline;margin:0;padding:10px 0;border-top:1px solid var(--rule-soft)}
+.probs li:first-child{border-top:0}
+.probs .own{color:var(--ink-2);font-size:14px}
+.sev{display:inline-flex;align-items:center;justify-self:start;min-height:24px;padding:0 9px;border-radius:999px;border:1px solid var(--rule);font:500 11.5px/1 var(--mono);letter-spacing:.03em}
+.sev.blocking{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.sev.warning{border:1px dashed var(--ink);color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 20px;padding:12px 24px;border-top:1px solid var(--rule);color:var(--ink-2);font-size:13px}
+/* page body: content and a side column */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:56px;align-items:start}
+.content h2{scroll-margin-top:24px}
+.side{position:sticky;top:24px;margin-top:64px;display:grid;gap:22px;font-size:14px;color:var(--ink-2)}
+.side h3{margin:0 0 6px;font:500 13px/1.3 var(--sans);color:var(--ink)}
+.side p{margin:0}
+.side nav a{display:block;padding:5px 0;color:var(--ink-2);text-decoration:none;border-bottom:1px solid var(--rule-soft)}
+.side nav a:hover{color:var(--ink)}
+.side pre{font-size:12px;margin:6px 0 0}
+.note{color:var(--ink-2);font-size:15px;max-width:44em;margin-top:14px}
+/* fix list: one card per owning team */
+.fixsum{margin:0 0 16px;font-size:17px}
+.team{border:1px solid var(--rule);border-radius:16px;background:#fbfaf6;margin:0 0 12px;overflow:hidden}
+.team-h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px;padding:14px 20px;border-bottom:1px solid var(--rule)}
+.team-h h3{margin:0;font:400 21px/1.2 var(--serif)}
+.team-h p{margin:0;display:flex;gap:14px;font-size:14px;color:var(--ink-2)}
+.team-h p b{font:400 20px/1 var(--serif);color:var(--ink);margin-right:4px}
+.todo{list-style:none;margin:0;padding:0 20px}
+.todo li{display:grid;grid-template-columns:6.5em 7.5em minmax(0,1fr);gap:4px 12px;align-items:baseline;margin:0;padding:11px 0;border-top:1px solid var(--rule-soft)}
+.todo li:first-child{border-top:0}
+.todo .u{font:400 13px/1.4 var(--mono);color:var(--ink-2)}
+.done{border:1px solid var(--rule);border-radius:16px;background:var(--green-wash);color:var(--green);padding:16px 20px;font-size:17px;margin:0}
+/* eval scorecard */
+.score{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--rule);border-radius:16px;background:#fbfaf6;overflow:hidden}
+.score div{padding:18px 20px;font-size:14px;color:var(--ink-2);line-height:1.4}
+.score div+div{border-left:1px solid var(--rule)}
+.score b{display:block;font:400 34px/1.1 var(--serif);color:var(--ink);margin-bottom:6px}
+.score b small{font-size:20px;color:var(--ink-2)}
+#issues{margin-top:8px}
+@media (max-width:1000px){
+ .layout{grid-template-columns:minmax(0,1fr);gap:0}
+ .side{position:static;margin-top:48px}
+ .score{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .score div:nth-child(3){border-left:0}
+ .score div:nth-child(n+3){border-top:1px solid var(--rule)}
+}
+@media (max-width:700px){
+ .bar-top,.vline,.tally,.campuses,.detail,.legend{padding-left:16px;padding-right:16px}
+ .vline h2{font-size:28px}
+ .vline p{font-size:16px}
+ .counts{grid-template-columns:1fr;gap:10px}
+ .counts b{font-size:30px;min-width:1.1em}
+ .tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ button.tile{padding:0 11px 10px}
+ button.tile::before{margin:0 -11px 2px}
+ .tile .name{font-size:16px}
+ .tile .top{flex-wrap:wrap}
+ .tile .nums{flex-wrap:wrap;gap:2px 10px;font-size:12.5px}
+ .tile .nums b{font-size:20px;margin-right:4px}
+ .probs li{grid-template-columns:5.8em minmax(0,1fr);gap:4px 10px}
+ .probs .own{grid-column:2}
+ .team-h,.todo{padding-left:16px;padding-right:16px}
+ .todo li{grid-template-columns:5.8em minmax(0,1fr)}
+ .todo .msg{grid-column:1/-1}
+ .seg button{padding:0 14px;font-size:14px}
+}
+@media (prefers-reduced-motion:reduce){button.tile,.stack i{transition:none}}
 </style>
 </head>
 <body>
 <!-- demo-chrome --><header class="demo-top"><a class="demo-brand" href="https://pranavgudise.dev/"><svg class="demo-mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.25"/><g class="n"><path class="f" d="M15.5 8.5 L 13.4 13.4 L 8.5 15.5 L 10.6 10.6 Z"/></g><circle class="p" cx="12" cy="12" r=".7"/></svg><span>Pranav Gudise</span></a><a class="pill" href="https://github.com/pg2342-hub/golive-readiness-check">Code on GitHub</a></header><!-- /demo-chrome -->
 
 <main>
+<div class="head">
 <h1>Go-live readiness check</h1>
-<p class="sub">Before a hospital unit goes live on a new staffing system, three feeds have to agree: the staff roster from HR, the schedule and pay codes from timekeeping, and the hourly patient census from the EHR. This tool reads all three and says, unit by unit, whether the unit is ready, and which team has to fix what.</p>
-
-<div class="box">
-<b>How to read this page</b>
-<ol class="how">
-<li>Pick <b>First data pull</b> to see a made-up two-hospital system with 25 typical data problems planted in it, or <b>After fixes</b> to see the same system once those problems are fixed.</li>
-<li>Each unit card shows its verdict. <b>NO-GO</b> means at least one blocking problem. <b>GO WITH FIXES</b> means only warnings. <b>GO</b> means nothing found.</li>
-<li>Click a unit to see its problems, or read the fix list below, which is grouped by the team that owns each fix.</li>
-</ol>
+<p class="lead">Before a hospital unit goes live on a new staffing system, three feeds have to agree: the staff roster from HR, the schedule and pay codes from timekeeping, and the hourly patient census from the EHR. This tool reads all three and says, unit by unit, whether the unit is ready, and which team has to fix what.</p>
 </div>
 
-<div class="toggle" role="tablist">
-<button id="b-first" class="on" onclick="show('first')">First data pull</button>
-<button id="b-fixed" onclick="show('fixed')">After fixes</button>
-</div>
-<div id="banner" class="banner"></div>
+<section class="board" id="board" aria-labelledby="verdict-h">
+  <div class="bar-top">
+    <div class="seg" role="radiogroup" aria-label="Which data to check">
+      <button type="button" role="radio" aria-checked="true" data-v="first">First data pull</button>
+      <button type="button" role="radio" aria-checked="false" data-v="fixed" tabindex="-1">After fixes</button>
+    </div>
+    <p class="cap" id="cap"></p>
+  </div>
+  <div class="vline" aria-live="polite">
+    <h2 id="verdict-h"></h2>
+    <span class="gate" id="gate"></span>
+    <p id="takeaway"></p>
+  </div>
+  <div class="tally">
+    <div class="stack" id="stack" aria-hidden="true"></div>
+    <div class="counts" id="counts"></div>
+  </div>
+  <div class="campuses" id="units"></div>
+  <div class="detail" id="unitDetail" aria-live="polite"></div>
+</section>
 
-<h2>Units</h2>
-<div id="units" class="grid"></div>
-<div id="unitDetail"></div>
+<div class="layout">
+<div class="content">
 
-<h2>Fix list by team</h2>
+<h2 id="fix-list">Fix list by team</h2>
 <div id="fixes"></div>
 
-<h2>How well the checks catch problems</h2>
-<div class="stats" id="stats"></div>
-<p class="muted">Each of the 25 planted problems was run on its own and all together. A false positive is a problem the tool reports that was not planted.</p>
+<h2 id="accuracy">How well the checks catch problems</h2>
+<div class="score" id="stats"></div>
+<p class="note">Each of the 25 planted problems was run on its own and all together. A false positive is a problem the tool reports that was not planted.</p>
 <details><summary>The 25 planted problems</summary><ol id="issues"></ol></details>
 
-<h2>Run it yourself</h2>
-<p>Python 3.9 or later, standard library only. From the repo folder:</p>
-<pre style="background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:12px;overflow-x:auto;font-size:13px">python3 -m readiness.report sample_data/first_pull
+<h2 id="checks-h">What it checks</h2>
+<div class="scroll"><table id="checks"><thead><tr><th>Check</th><th>Severity</th><th>Team that fixes it</th></tr></thead><tbody></tbody></table></div>
+</div>
+
+<aside class="side" aria-label="About this build">
+  <nav aria-label="On this page"><a href="#board">Readiness board</a><a href="#fix-list">Fix list by team</a><a href="#accuracy">How well the checks catch problems</a><a href="#checks-h">What it checks</a></nav>
+  <div><h3>Data</h3><p>All data on this page is made up. Unit names, unions, pay codes and contract rules are illustrative and do not describe any real hospital or contract.</p></div>
+  <div><h3>Run it yourself</h3><p>Python 3.9 or later, standard library only. From the repo folder:</p><pre>python3 -m readiness.report sample_data/first_pull
 python3 -m readiness.report sample_data/after_fixes
 python3 -m eval.run_eval
-python3 -m unittest</pre>
-<h2>What it checks</h2>
-<div class="wrap"><table id="checks"><thead><tr><th>Check</th><th>Severity</th><th>Team that fixes it</th></tr></thead><tbody></tbody></table></div>
-
-<footer>All data on this page is made up. Unit names, unions, pay codes and contract rules are illustrative and do not describe any real hospital or contract. Code and sample data: <a href="https://github.com/pg2342-hub/golive-readiness-check">github.com/pg2342-hub/golive-readiness-check</a>.</footer>
+python3 -m unittest</pre></div>
+  <div><a class="pill" href="https://github.com/pg2342-hub/golive-readiness-check">Code on GitHub</a></div>
+</aside>
+</div>
 </main>
 <script>
 const D = {"system": "Northgate University Health (sample data)", "views": {"first": {"findings": [{"check": "duplicate_employee_id", "check_name": "Duplicate employee IDs in the HR roster", "severity": "blocking", "owner": "HR systems team", "unit": "MC-5E", "key": "E1022", "message": "Employee ID E1022 appears 2 times in the HR roster, so shifts cannot be tied to one person."}, {"check": "duplicate_employee_id", "check_name": "Duplicate employee IDs in the HR roster", "severity": "blocking", "owner": "HR systems team", "unit": "RV-ICU", "key": "E1104", "message": "Employee ID E1104 appears 2 times in the HR roster, so shifts cannot be tied to one person."}, {"check": "job_code_unmapped", "check_name": "Job code with no staffing role", "severity": "blocking", "owner": "Nursing operations", "unit": "MC-4W", "key": "RNTRV:E1001", "message": "E1001 has job code 'RNTRV', which has no staffing role, so they cannot be offered shifts."}, {"check": "union_missing", "check_name": "Union-covered staff with no union on file", "severity": "blocking", "owner": "Labor relations", "unit": "MC-4W", "key": "E1010", "message": "E1010 (Charge Nurse) is in a union-covered job but has no union on file, so contract rules cannot be applied."}, {"check": "union_missing", "check_name": "Union-covered staff with no union on file", "severity": "blocking", "owner": "Labor relations", "unit": "MC-4W", "key": "E1015", "message": "E1015 (Health Unit Coordinator) is in a union-covered job but has no union on file, so contract rules cannot be applied."}, {"check": "union_missing", "check_name": "Union-covered staff with no union on file", "severity": "blocking", "owner": "Labor relations", "unit": "MC-LD", "key": "E1069", "message": "E1069 (Staff Nurse II) is in a union-covered job but has no union on file, so contract rules cannot be applied."}, {"check": "home_unit_unknown", "check_name": "Home unit not in the unit list", "severity": "warning", "owner": "HR systems team", "unit": "LD-OLD", "key": "E1079", "message": "E1079 has home unit 'LD-OLD', which is not in the unit list."}, {"check": "job_code_unmapped", "check_name": "Job code with no staffing role", "severity": "blocking", "owner": "Nursing operations", "unit": "RV-ED", "key": "CNA2:E1122", "message": "E1122 has job code 'CNA2', which has no staffing role, so they cannot be offered shifts."}, {"check": "scheduled_after_termination", "check_name": "Shifts for staff marked terminated", "severity": "blocking", "owner": "HR systems team", "unit": "MC-ED", "key": "E1048", "message": "E1048 is marked Terminated in the HR roster but still has shifts on MC-ED."}, {"check": "scheduled_after_termination", "check_name": "Shifts for staff marked terminated", "severity": "blocking", "owner": "HR systems team", "unit": "MC-ED", "key": "E1059", "message": "E1059 is marked Terminated in the HR roster but still has shifts on MC-ED."}, {"check": "scheduled_not_in_roster", "check_name": "Scheduled staff missing from the HR roster", "severity": "blocking", "owner": "HR systems team", "unit": "MC-4W", "key": "E9001", "message": "E9001 is on the schedule for MC-4W but is not in the HR roster."}, {"check": "scheduled_not_in_roster", "check_name": "Scheduled staff missing from the HR roster", "severity": "blocking", "owner": "HR systems team", "unit": "RV-ICU", "key": "E9002", "message": "E9002 is on the schedule for RV-ICU but is not in the HR roster."}, {"check": "scheduled_not_in_roster", "check_name": "Scheduled staff missing from the HR roster", "severity": "blocking", "owner": "HR systems team", "unit": "MC-LD", "key": "E9003", "message": "E9003 is on the schedule for MC-LD but is not in the HR roster."}, {"check": "pay_code_no_rule", "check_name": "Pay code with no contract rule", "severity": "blocking", "owner": "Labor relations", "unit": "RV-ICU", "key": "CALLB", "message": "Pay code 'CALLB' (Call-back) is used on RV-ICU but has no matching contract rule, so it cannot be checked or paid correctly."}, {"check": "pay_code_no_rule", "check_name": "Pay code with no contract rule", "severity": "blocking", "owner": "Labor relations", "unit": "MC-5E", "key": "INCSH", "message": "Pay code 'INCSH' (Incentive extra shift) is used on MC-5E but has no matching contract rule, so it cannot be checked or paid correctly."}, {"check": "pay_code_unknown", "check_name": "Pay code missing from the pay code table", "severity": "blocking", "owner": "Timekeeping admin", "unit": "MC-ED", "key": "OT2X", "message": "Pay code 'OT2X' is on MC-ED's schedule but missing from the pay code table."}, {"check": "ehr_unit_unmapped", "check_name": "EHR census unit not mapped to a staffing unit", "severity": "blocking", "owner": "EHR interface team", "unit": "(unmapped)", "key": "MC 6W OBS", "message": "Census unit 'MC 6W OBS' from the EHR does not map to a staffing unit, so its patients are not counted toward demand."}, {"check": "ehr_unit_unmapped", "check_name": "EHR census unit not mapped to a staffing unit", "severity": "blocking", "owner": "EHR interface team", "unit": "(unmapped)", "key": "RV ED", "message": "Census unit 'RV ED' from the EHR does not map to a staffing unit, so its patients are not counted toward demand."}, {"check": "census_gaps", "check_name": "Hours missing from the census feed", "severity": "warning", "owner": "EHR interface team", "unit": "MC-5E", "key": "MC-5E", "message": "MC-5E is missing 10 of 168 census hours in the feed window."}, {"check": "unit_no_census", "check_name": "Staffing unit with no census feed", "severity": "blocking", "owner": "EHR interface team", "unit": "MC-LD", "key": "MC-LD", "message": "MC-LD has no census rows from the EHR, so the unit has no demand signal."}, {"check": "census_gaps", "check_name": "Hours missing from the census feed", "severity": "warning", "owner": "EHR interface team", "unit": "RV-3N", "key": "RV-3N", "message": "RV-3N is missing 5 of 168 census hours in the feed window."}, {"check": "unit_no_census", "check_name": "Staffing unit with no census feed", "severity": "blocking", "owner": "EHR interface team", "unit": "RV-ED", "key": "RV-ED", "message": "RV-ED has no census rows from the EHR, so the unit has no demand signal."}, {"check": "grid_missing", "check_name": "No staffing grid for a role on the unit", "severity": "blocking", "owner": "Nursing operations", "unit": "MC-ED", "key": "MC-ED:Clerk", "message": "MC-ED has Clerk shifts but no staffing grid for Clerk, so the number of Clerks needed cannot be computed."}, {"check": "grid_missing", "check_name": "No staffing grid for a role on the unit", "severity": "blocking", "owner": "Nursing operations", "unit": "RV-ICU", "key": "RV-ICU:CNA", "message": "RV-ICU has CNA shifts but no staffing grid for CNA, so the number of CNAs needed cannot be computed."}, {"check": "shift_overlap", "check_name": "Overlapping shifts for one person", "severity": "warning", "owner": "Timekeeping admin", "unit": "MC-5E", "key": "E1006@2027-01-05T23:00", "message": "E1006 has a shift on MC-5E starting 2027-01-05 23:00 before their shift on MC-4W ends."}, {"check": "shift_overlap", "check_name": "Overlapping shifts for one person", "severity": "warning", "owner": "Timekeeping admin", "unit": "RV-ED", "key": "E1111@2027-01-05T07:00", "message": "E1111 has a shift on RV-ED starting 2027-01-05 07:00 before their shift on RV-ED ends."}], "verdicts": [{"unit_code": "MC-4W", "hospital": "Main Campus", "unit_name": "4 West Med-Surg", "verdict": "NO-GO", "blocking": 4, "warnings": 0}, {"unit_code": "MC-5E", "hospital": "Main Campus", "unit_name": "5 East Cardiac Stepdown", "verdict": "NO-GO", "blocking": 2, "warnings": 2}, {"unit_code": "MC-MICU", "hospital": "Main Campus", "unit_name": "Medical ICU", "verdict": "GO", "blocking": 0, "warnings": 0}, {"unit_code": "MC-ED", "hospital": "Main Campus", "unit_name": "Emergency Department", "verdict": "NO-GO", "blocking": 4, "warnings": 0}, {"unit_code": "MC-LD", "hospital": "Main Campus", "unit_name": "Labor and Delivery", "verdict": "NO-GO", "blocking": 3, "warnings": 0}, {"unit_code": "RV-3N", "hospital": "Riverside", "unit_name": "3 North Med-Surg", "verdict": "GO WITH FIXES", "blocking": 0, "warnings": 1}, {"unit_code": "RV-ICU", "hospital": "Riverside", "unit_name": "ICU", "verdict": "NO-GO", "blocking": 4, "warnings": 0}, {"unit_code": "RV-ED", "hospital": "Riverside", "unit_name": "Emergency Department", "verdict": "NO-GO", "blocking": 2, "warnings": 1}], "feeds": {"contract_rules": 7, "ehr_census": 1162, "hris_roster": 128, "job_skills": 7, "pay_codes": 7, "staffing_grid": 22, "timekeeping_schedule": 713, "unit_map": 8, "units": 8}}, "fixed": {"findings": [], "verdicts": [{"unit_code": "MC-4W", "hospital": "Main Campus", "unit_name": "4 West Med-Surg", "verdict": "GO", "blocking": 0, "warnings": 0}, {"unit_code": "MC-5E", "hospital": "Main Campus", "unit_name": "5 East Cardiac Stepdown", "verdict": "GO", "blocking": 0, "warnings": 0}, {"unit_code": "MC-MICU", "hospital": "Main Campus", "unit_name": "Medical ICU", "verdict": "GO", "blocking": 0, "warnings": 0}, {"unit_code": "MC-ED", "hospital": "Main Campus", "unit_name": "Emergency Department", "verdict": "GO", "blocking": 0, "warnings": 0}, {"unit_code": "MC-LD", "hospital": "Main Campus", "unit_name": "Labor and Delivery", "verdict": "GO", "blocking": 0, "warnings": 0}, {"unit_code": "RV-3N", "hospital": "Riverside", "unit_name": "3 North Med-Surg", "verdict": "GO", "blocking": 0, "warnings": 0}, {"unit_code": "RV-ICU", "hospital": "Riverside", "unit_name": "ICU", "verdict": "GO", "blocking": 0, "warnings": 0}, {"unit_code": "RV-ED", "hospital": "Riverside", "unit_name": "Emergency Department", "verdict": "GO", "blocking": 0, "warnings": 0}], "feeds": {"contract_rules": 7, "ehr_census": 1344, "hris_roster": 126, "job_skills": 7, "pay_codes": 7, "staffing_grid": 24, "timekeeping_schedule": 708, "unit_map": 8, "units": 8}}}, "checks": [{"id": "scheduled_not_in_roster", "name": "Scheduled staff missing from the HR roster", "severity": "blocking", "owner": "HR systems team"}, {"id": "scheduled_after_termination", "name": "Shifts for staff marked terminated", "severity": "blocking", "owner": "HR systems team"}, {"id": "duplicate_employee_id", "name": "Duplicate employee IDs in the HR roster", "severity": "blocking", "owner": "HR systems team"}, {"id": "home_unit_unknown", "name": "Home unit not in the unit list", "severity": "warning", "owner": "HR systems team"}, {"id": "job_code_unmapped", "name": "Job code with no staffing role", "severity": "blocking", "owner": "Nursing operations"}, {"id": "union_missing", "name": "Union-covered staff with no union on file", "severity": "blocking", "owner": "Labor relations"}, {"id": "pay_code_unknown", "name": "Pay code missing from the pay code table", "severity": "blocking", "owner": "Timekeeping admin"}, {"id": "pay_code_no_rule", "name": "Pay code with no contract rule", "severity": "blocking", "owner": "Labor relations"}, {"id": "ehr_unit_unmapped", "name": "EHR census unit not mapped to a staffing unit", "severity": "blocking", "owner": "EHR interface team"}, {"id": "unit_no_census", "name": "Staffing unit with no census feed", "severity": "blocking", "owner": "EHR interface team"}, {"id": "census_gaps", "name": "Hours missing from the census feed", "severity": "warning", "owner": "EHR interface team"}, {"id": "grid_missing", "name": "No staffing grid for a role on the unit", "severity": "blocking", "owner": "Nursing operations"}, {"id": "shift_overlap", "name": "Overlapping shifts for one person", "severity": "warning", "owner": "Timekeeping admin"}], "issues": ["Agency nurse set up in timekeeping but never added to the HR roster (4 West)", "Traveler scheduled on the Riverside ICU with no HR record", "New hire scheduled on Labor and Delivery before HR onboarding finished", "ED nurse terminated in HR but still on next week's schedule", "ED nursing assistant terminated in HR but still scheduled", "Stepdown nurse loaded twice in the HR roster after a job change", "Riverside ICU charge nurse duplicated with a different FTE", "L&D manager's home unit still uses a retired unit code", "Travel-nurse job code with no staffing role (4 West)", "New nursing assistant job code not mapped to a role (Riverside ED)", "4 West charge nurse with no union on file", "L&D nurse with no union on file", "4 West unit coordinator with no union on file", "Double-time pay code used in the ED but missing from the pay code table", "Call-back pay code points to a contract rule that does not exist (Riverside ICU)", "Incentive-shift pay code has no contract rule (Stepdown)", "EHR interface renamed the Riverside ED census unit, breaking the mapping", "New observation unit in the EHR census with no staffing unit", "Census feed never turned on for Labor and Delivery", "Stepdown census feed dropped 10 hours", "Riverside med-surg census feed dropped 5 hours", "ED has unit coordinator shifts but no staffing grid for them", "Riverside ICU has nursing assistant shifts but no grid for them", "4 West nurse floated to Stepdown on an overlapping shift", "Riverside ED nurse double-booked on the same shift"], "eval": {"clean": 0, "alone": 25, "together": 25, "fp": 0, "total": 25}};
 let view = "first", sel = null;
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-function show(v){view=v;sel=null;document.getElementById("b-first").className=v=="first"?"on":"";document.getElementById("b-fixed").className=v=="fixed"?"on":"";render();}
+const cls = v => v.replace(/ /g,"-");
+const plural = (n,w) => `${n} ${w}${n==1?"":"s"}`;
+const ORDER = ["NO-GO","GO WITH FIXES","GO"];
+const MEANS = {"NO-GO":"at least one blocking problem","GO WITH FIXES":"warnings only","GO":"nothing found"};
+const CAPS = {first:"A made-up two-hospital system with 25 typical data problems planted in it.",
+              fixed:"The same system once those problems are fixed."};
+const badge = v => `<span class="badge ${v=="NO-GO"?"no-go":v=="GO"?"go":"fixes"}">${v}</span>`;
+const seg = [...document.querySelectorAll(".seg button")];
+function show(v){
+  view=v;
+  seg.forEach(b=>{const on=b.dataset.v==v; b.setAttribute("aria-checked",String(on)); b.tabIndex=on?0:-1;});
+  render();
+}
+seg.forEach((b,i)=>{
+  b.addEventListener("click",()=>show(b.dataset.v));
+  b.addEventListener("keydown",e=>{
+    if(!["ArrowLeft","ArrowRight","ArrowUp","ArrowDown"].includes(e.key))return;
+    e.preventDefault(); const n=seg[(i+1)%seg.length]; show(n.dataset.v); n.focus();
+  });
+});
 function render(){
   const V=D.views[view], vs=V.verdicts, f=V.findings;
-  const no=vs.filter(x=>x.verdict=="NO-GO").length, fx=vs.filter(x=>x.verdict=="GO WITH FIXES").length, go=vs.filter(x=>x.verdict=="GO").length;
-  const b=document.getElementById("banner");
-  b.className="banner "+(no?"no":"go");
-  b.textContent = `Ready: all ${vs.length} units are GO, and no problems were found.`;
-  if(no){const teams=new Set(f.map(x=>x.owner)).size; b.textContent=`Not ready: ${no} of ${vs.length} units are NO-GO (${fx} GO WITH FIXES, ${go} GO), with ${f.length} findings from 25 planted problems for ${teams} teams to fix.`;}
-  document.getElementById("units").innerHTML = vs.map(u=>`<button class="unit${sel==u.unit_code?" sel":""}" onclick="pick('${u.unit_code}')"><div class="h">${esc(u.hospital)}</div><div class="n">${esc(u.unit_name)}</div><div class="v ${u.verdict.replace(/ /g,"-")}">${u.verdict}</div><div class="h">${u.blocking} blocking, ${u.warnings} warning${u.warnings==1?"":"s"}</div></button>`).join("");
+  const cnt={}; ORDER.forEach(k=>cnt[k]=vs.filter(x=>x.verdict==k).length);
+  const no=cnt["NO-GO"], fx=cnt["GO WITH FIXES"], go=cnt["GO"];
+  document.getElementById("cap").textContent=CAPS[view];
+  const h=document.getElementById("verdict-h"), g=document.getElementById("gate"), t=document.getElementById("takeaway");
+  if(no){
+    const teams=new Set(f.map(x=>x.owner)).size;
+    h.textContent="Not ready"; g.className="gate nogo"; g.textContent="NO-GO";
+    t.innerHTML=`<b>${no} of ${vs.length} units are NO-GO</b> (${fx} GO WITH FIXES, ${go} GO), with ${f.length} findings from 25 planted problems for ${teams} teams to fix.`;
+  } else {
+    h.textContent="Ready"; g.className="gate go"; g.textContent="GO";
+    t.innerHTML=`<b>All ${vs.length} units are GO</b>, and no problems were found.`;
+  }
+  document.getElementById("stack").innerHTML=ORDER.flatMap(k=>Array(cnt[k]).fill(`<i class="k-${cls(k)}"></i>`)).join("");
+  document.getElementById("counts").innerHTML=ORDER.map(k=>`<div class="${cnt[k]?"":"zero"}"><b>${cnt[k]}</b><span class="lab"><i class="k-${cls(k)}"></i>${k}</span><span>${MEANS[k]}</span></div>`).join("");
+  const campuses=[]; vs.forEach(u=>{let c=campuses.find(x=>x.name==u.hospital); if(!c)campuses.push(c={name:u.hospital,units:[]}); c.units.push(u);});
+  document.getElementById("units").innerHTML=campuses.map(c=>{
+    return `<div class="campus"><h3>${esc(c.name)} <span>${plural(c.units.length,"unit")}</span></h3><div class="tiles">${c.units.map(u=>
+      `<button type="button" class="tile t-${cls(u.verdict)}" data-u="${esc(u.unit_code)}" aria-expanded="${sel==u.unit_code}" aria-controls="unitDetail">
+        <span class="top"><span class="code">${esc(u.unit_code)}</span>${badge(u.verdict)}</span>
+        <span class="name">${esc(u.unit_name)}</span>
+        <span class="nums"><span class="${u.blocking?"":"z"}"><b>${u.blocking}</b>blocking</span><span class="${u.warnings?"":"z"}"><b>${u.warnings}</b>${u.warnings==1?"warning":"warnings"}</span></span>
+      </button>`).join("")}</div></div>`;}).join("");
+  document.querySelectorAll("button.tile").forEach(b=>b.addEventListener("click",()=>pick(b.dataset.u)));
   const det=document.getElementById("unitDetail");
-  if(sel){const items=f.filter(x=>x.unit==sel); det.innerHTML=`<h3>${esc(sel)}: ${items.length? items.length+" problems":"no problems"}</h3>`+(items.length?`<div class="wrap"><table><tr><th>Severity</th><th>Problem</th><th>Team</th></tr>${items.map(x=>`<tr><td class="sev ${x.severity}">${x.severity}</td><td>${esc(x.message)}</td><td>${esc(x.owner)}</td></tr>`).join("")}</table></div>`:"");} else det.innerHTML="";
+  if(sel){
+    const u=vs.find(x=>x.unit_code==sel), items=f.filter(x=>x.unit==sel)
+      .sort((a,b)=>(a.severity!="blocking")-(b.severity!="blocking"));
+    det.innerHTML=`<h3>${esc(u?u.unit_name:sel)} <span class="code" style="font:400 14px var(--mono);color:var(--ink-2)">${esc(sel)}</span></h3>`+
+      (items.length?`<p class="hint">${plural(items.length,"problem")}. Select the unit again to close.</p><ul class="probs">${items.map(x=>`<li><span class="sev ${x.severity}">${x.severity}</span><span>${esc(x.message)}</span><span class="own">${esc(x.owner)}</span></li>`).join("")}</ul>`
+        :`<p class="hint">No problems found for this unit.</p>`);
+  } else det.innerHTML=`<p class="hint">Select a unit to see its problems and the team that fixes each one.</p>`;
   const known=new Set(vs.map(u=>u.unit_code)); const groups={};
   f.forEach(x=>{(groups[x.owner]=groups[x.owner]||[]).push(x)});
-  const order=Object.keys(groups).sort((a,b)=>groups[b].filter(x=>x.severity=="blocking").length-groups[a].filter(x=>x.severity=="blocking").length||a.localeCompare(b));
-  document.getElementById("fixes").innerHTML = order.length? order.map(o=>`<div class="team"><h3>${esc(o)} <span>(${groups[o].length})</span></h3><div class="wrap"><table><tr><th>Severity</th><th>Unit</th><th>Problem</th></tr>${groups[o].sort((a,b)=>(a.severity!="blocking")-(b.severity!="blocking")||a.unit.localeCompare(b.unit)).map(x=>`<tr><td class="sev ${x.severity}">${x.severity}</td><td>${known.has(x.unit)?esc(x.unit):"Not tied to a live unit"}</td><td>${esc(x.message)}</td></tr>`).join("")}</table></div></div>`).join("") : "<p>Nothing to fix.</p>";
+  const nb=o=>groups[o].filter(x=>x.severity=="blocking").length;
+  const order=Object.keys(groups).sort((a,b)=>nb(b)-nb(a)||a.localeCompare(b));
+  document.getElementById("fixes").innerHTML = order.length?
+    `<p class="fixsum">${plural(f.length,"finding")} across ${plural(order.length,"team")}, ${f.filter(x=>x.severity=="blocking").length} of them blocking. Teams with the most blocking fixes come first.</p>`+
+    order.map(o=>{const b=nb(o), w=groups[o].length-b;
+      return `<div class="team"><div class="team-h"><h3>${esc(o)}</h3><p><span><b>${b}</b>blocking</span><span><b>${w}</b>${w==1?"warning":"warnings"}</span></p></div><ul class="todo">${groups[o].sort((a,b)=>(a.severity!="blocking")-(b.severity!="blocking")||a.unit.localeCompare(b.unit)).map(x=>`<li><span class="sev ${x.severity}">${x.severity}</span><span class="u">${known.has(x.unit)?esc(x.unit):"Not tied to a live unit"}</span><span class="msg">${esc(x.message)}</span></li>`).join("")}</ul></div>`;}).join("")
+    : `<p class="done">Nothing to fix.</p>`;
 }
-function pick(u){sel = sel==u?null:u; render();}
+function pick(u){sel = sel==u?null:u; render(); const b=document.querySelector(`button.tile[data-u="${u}"]`); b&&b.focus();}
 const E=D.eval;
 document.getElementById("stats").innerHTML=[
  [`${E.clean}`,"problems reported on the clean system"],
- [`${E.alone} of ${E.total}`,"planted problems caught when run one at a time"],
- [`${E.together} of ${E.total}`,"caught when all 25 are planted together"],
- [`${E.fp}`,"false positives"]].map(s=>`<div class="stat"><b>${s[0]}</b>${s[1]}</div>`).join("");
+ [`${E.alone} <small>of ${E.total}</small>`,"planted problems caught when run one at a time"],
+ [`${E.together} <small>of ${E.total}</small>`,"caught when all 25 are planted together"],
+ [`${E.fp}`,"false positives"]].map(s=>`<div><b>${s[0]}</b>${s[1]}</div>`).join("");
 document.getElementById("issues").innerHTML=D.issues.map(i=>`<li>${esc(i)}</li>`).join("");
-document.querySelector("#checks tbody").innerHTML=D.checks.map(c=>`<tr><td>${esc(c.name)}</td><td class="sev ${c.severity}">${c.severity}</td><td>${esc(c.owner)}</td></tr>`).join("");
+document.querySelector("#checks tbody").innerHTML=D.checks.map(c=>`<tr><td>${esc(c.name)}</td><td><span class="sev ${c.severity}">${c.severity}</span></td><td>${esc(c.owner)}</td></tr>`).join("");
 render();
 </script>
 <!-- demo-chrome --><footer class="demo-foot"><span>A working build by <a href="https://pranavgudise.dev/">Pranav Gudise</a>. Synthetic or public data only.</span><a href="https://github.com/pg2342-hub/golive-readiness-check">github.com/pg2342-hub/golive-readiness-check</a></footer><!-- /demo-chrome -->
